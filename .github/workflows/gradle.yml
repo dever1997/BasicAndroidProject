@@ -52,7 +52,7 @@ jobs:
          
      - name: Deploy
        run: |
-          aws devicefarm create-upload --project-arn ${{secrets.PROJECT.ARN}} --name app/build/outputs/apk/debug/app-debug.apk --type ANDROID_APP
+          aws devicefarm create-upload --project-arn arn:aws:devicefarm:us-west-2:102525726332:project:0ea2422d-726a-40c1-8667-6a91d75e66a7 --name app/build/outputs/apk/debug/app-debug.apk --type ANDROID_APP
          
          
         
