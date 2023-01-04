@@ -26,10 +26,44 @@ jobs:
       with:
         arguments: clean build assembleDebug
         
-    - name: Test with Gradle
-      uses: gradle/gradle-build-action@v2
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-         arguments: test
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+
+    - name: Schedule test run with mixed data
+      uses: realm/aws-devicefarm/test-application@master
+      with:
+        name: schedule-run
+#         file_artifacts: |
+#           Test spec file.yml
+#           Customer Artifacts.zip
+        project_arn: ${{ secrets.AWS_PROJECT_ARN }}
+        device_pool_arn: ${{ secrets.AWS_DEVICE_POOL_ARN }}
+        app_file: https://github.com/dever1997/app/build/outputs/apk/debug/app-debug.apk
+        app_type: ANDROID_APP
+        test_type: BUILTIN_FUZZ
+#         test_package_file: https://github.com/realm/aws-devicefarm-sample-data/releases/download/0.3/sample_env_python3.zip
+#         test_package_type: APPIUM_PYTHON_TEST_PACKAGE
+#         test_spec_file: https://github.com/realm/aws-devicefarm-sample-data/releases/download/0.3/test_spec.yaml
+#         test_spec_type: APPIUM_PYTHON_TEST_SPEC
+#         remote_src: true
+        
+#     - name: Test with Gradle
+#       uses: gradle/gradle-build-action@v2
+#       with:
+#          arguments: test
 
 #   deploy:
 #     needs: [build]
