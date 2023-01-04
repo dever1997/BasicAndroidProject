@@ -52,7 +52,7 @@ jobs:
 #           Customer Artifacts.zip
         project_arn: arn:aws:devicefarm:us-west-2:102525726332:project:0ea2422d-726a-40c1-8667-6a91d75e66a7
         device_pool_arn: ${{ secrets.AWS_DEVICE_POOL_ARN }}
-        app_file: https://github.com/dever1997/app/build/outputs/apk/debug/app-debug.apk
+        app_file: app/build/outputs/apk/debug/app-debug.apk
         app_type: ANDROID_APP
         test_type: BUILTIN_FUZZ
 #         test_package_file: https://github.com/realm/aws-devicefarm-sample-data/releases/download/0.3/sample_env_python3.zip
