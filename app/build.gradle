@@ -74,8 +74,8 @@ devicefarm {
        // accessKey "AKIARPXYCNZ6CEL2IJ45"
        // secretKey "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"
         
-        accessKey System.getenv('secrets.AWS_ACCESS_KEY')
-        secretKey System.getenv('secrets.AWS_SECRET_ACCESS_KEY')
+        accessKey System.getenv('AWS_ACCESS_KEY')
+        secretKey System.getenv('AWS_SECRET_ACCESS_KEY')
     }
 
    // devicePool "myDevicePool"
