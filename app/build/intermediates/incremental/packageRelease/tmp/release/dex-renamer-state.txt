@@ -1,0 +1,4 @@
+#Thu Jan 05 08:06:01 EST 2023
+base.0=/Users/deverlygousse/Documents/AndroidProjects/app/build/intermediates/dex/release/mergeDexRelease/classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
