@@ -1,3 +1,5 @@
+apply plugin: 'devicefarm'
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
@@ -60,4 +62,24 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+}
+
+devicefarm {
+
+    // Required. The Project must already exist. You can create a project in the AWS console.
+    projectName "cd-pipeline-to-devicefarm" 
+    
+    // Required. You must specify either accessKey and secretKey OR roleArn. roleArn takes precedence. 
+    authentication {
+        accessKey "AKIARPXYCNZ6CEL2IJ45"
+        secretKey "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"
+    }
+
+    devicePool "myDevicePool"
+
+    fuzz {
+    eventThrottle 50 // Optional. Default is 50
+    eventCount 6000  // Optional. Default is 6000
+    randomizerSeed 1234 // Optional. Default is blank
+   }
 }
