@@ -71,8 +71,11 @@ devicefarm {
     
     // Required. You must specify either accessKey and secretKey OR roleArn. roleArn takes precedence. 
     authentication {
-        accessKey "AKIARPXYCNZ6CEL2IJ45"
-        secretKey "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"
+       // accessKey "AKIARPXYCNZ6CEL2IJ45"
+       // secretKey "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"
+        
+        accessKey System.getenv('AWS_ACCESS_KEY')
+        secretKey System.getenv('AWS_SECRET_ACCESS_KEY')
     }
 
    // devicePool "myDevicePool"
