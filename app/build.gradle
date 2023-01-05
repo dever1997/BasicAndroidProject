@@ -75,7 +75,7 @@ devicefarm {
         secretKey "sJIRhwsZtf/GuWjMwisUwQ19sBNHFIHy+B/srR8c"
     }
 
-    devicePool "myDevicePool"
+   // devicePool "myDevicePool"
 
     fuzz {
     eventThrottle 50 // Optional. Default is 50
