@@ -46,7 +46,7 @@ android {
     }
 }
 
-apply plugin: 'devicefarm'
+
 
 dependencies {
 
@@ -64,22 +64,24 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
 }
 
-devicefarm {
+//apply plugin: 'devicefarm'
 
-    // Required. The Project must already exist. You can create a project in the AWS console.
+//devicefarm {
+
+//    // Required. The Project must already exist. You can create a project in the AWS console.
     projectName "cd-pipeline-to-devicefarm" 
     
-    // Required. You must specify either accessKey and secretKey OR roleArn. roleArn takes precedence. 
-    authentication {
-        accessKey "AKIARPXYCNZ6CEL2IJ45"
-        secretKey "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"
-    }
+//    // Required. You must specify either accessKey and secretKey OR roleArn. roleArn takes precedence. 
+//    authentication {
+//        accessKey System.getenv('AWS_ACCESS_KEY')
+//        secretKey System.getenv('AWS_SECRET_ACCESS_KEY')
+//    }
 
    // devicePool "myDevicePool"
 
-    fuzz {
-    eventThrottle 50 // Optional. Default is 50
-    eventCount 6000  // Optional. Default is 6000
-    randomizerSeed 1234 // Optional. Default is blank
-   }
-}
+//    fuzz {
+//    eventThrottle 50 // Optional. Default is 50
+//    eventCount 6000  // Optional. Default is 6000
+//    randomizerSeed 1234 // Optional. Default is blank
+//   }
+//}
