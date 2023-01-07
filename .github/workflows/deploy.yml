@@ -28,6 +28,7 @@ jobs:
       with:
          project_arn: arn:aws:devicefarm:us-west-2:102525726332:project:0ea2422d-726a-40c1-8667-6a91d75e66a7
          name: app_debug.apk
+         region: us-west-2
          type: ANDROID_APP
          
     - name: get-upload
