@@ -23,7 +23,7 @@ jobs:
       run: ./gradlew build
       
     - name: upload to aws devicefarm
-      uses: realm/aws-devicefarm/create-upload@v1
+      uses: realm/aws-devicefarm/create-upload@master
       id: create-upload
       with:
          project_arn: arn:aws:devicefarm:us-west-2:102525726332:project:0ea2422d-726a-40c1-8667-6a91d75e66a7
@@ -31,7 +31,7 @@ jobs:
          type: ANDROID_APP
          
     - name: get-upload
-      uses: realm/aws-devicefarm/get-upload@v1
+      uses: realm/aws-devicefarm/get-upload@master
       id: get-upload
       with:
            ressource-arn: ${{steps.create-upload.outputs.arn}}
