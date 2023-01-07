@@ -22,22 +22,21 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
       
-    - name: upload to aws devicefarm
-      uses: realm/aws-devicefarm/create-upload@master
-      id: create-upload
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@master
       with:
-         project_arn: arn:aws:devicefarm:us-west-2:102525726332:project:0ea2422d-726a-40c1-8667-6a91d75e66a7
-         name: app_debug.apk
-         region: us-west-2
-         type: ANDROID_APP
-         
-    - name: get-upload
-      uses: realm/aws-devicefarm/get-upload@master
-      id: get-upload
-      with:
-           ressource-arn: ${{steps.create-upload.outputs.arn}}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
       
-    - name: print status
-      run: echo ${{steps.get-upload.outputs.status}}
+    - name: upload to aws devicefarm
+      uses: realm/aws-devicefarm/test-application@master
+      with:
+       project_arn: ${{secrets.PROJECT_ARN}}
+       device_pool-arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
+       app_file: app-debug.apk
+       app_type: ANDROID_APP
+       test_type: BUILTIN_EXPLORER
+
       
   
