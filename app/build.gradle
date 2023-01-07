@@ -69,7 +69,7 @@ dependencies {
 //devicefarm {
 
 //    // Required. The Project must already exist. You can create a project in the AWS console.
-    projectName "cd-pipeline-to-devicefarm" 
+//    projectName "cd-pipeline-to-devicefarm" 
     
 //    // Required. You must specify either accessKey and secretKey OR roleArn. roleArn takes precedence. 
 //    authentication {
