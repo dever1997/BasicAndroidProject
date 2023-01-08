@@ -10,6 +10,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Install jq tool
+      run: |
+       sudo apt-get update
+       sudo apt-get install jq
     - name: set up JDK 11
       uses: actions/setup-java@v3
       with:
