@@ -30,13 +30,30 @@ jobs:
         aws-region: us-west-2
       
     - name: upload to aws devicefarm
-      uses: realm/aws-devicefarm/test-application@master
+      uses: realm/aws-devicefarm/create-upload@master
+      id: upload-app
       with:
        project_arn: ${{secrets.PROJECT_ARN}}
-       device_pool_arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
+       name: app-debug.apk
+       #device_pool_arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
        #app_file: app-debug.apk
        app_type: ANDROID_APP
-       test_type: BUILTIN_EXPLORER
+       
+    - name: schedule a test run
+      uses: realm/aws-devicefarm/schedule-run@master
+      id: schedule
+      with:
+        project_arn: ${{secrets.PROJECT_ARN}}
+        device_pool_arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
+        app_arn: ${{steps.upload-app.outputs.arn}}
+        test_type: BUILTIN_EXPLORER
+        
+    - name: get status of run
+      uses: realm/aws-devicefarm/get-run@master
+      id: get
+      with:
+        run_arn: ${{steps.schedule.outputs.arn}}
+ 
 
       
   
