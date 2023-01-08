@@ -20,7 +20,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build --build-cache
       
     - name: configure aws credentials
       uses: aws-actions/configure-aws-credentials@master
@@ -41,8 +41,8 @@ jobs:
        
     - name: schedule a test run
       uses: realm/aws-devicefarm/schedule-run@master
-      id: schedule
       with:
+        name: schedule_run
         project_arn: ${{secrets.PROJECT_ARN}}
         device_pool_arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
         app_arn: ${{steps.upload-app.outputs.arn}}
@@ -50,9 +50,8 @@ jobs:
         
     - name: get status of run
       uses: realm/aws-devicefarm/get-run@master
-      id: get
       with:
-        run_arn: ${{steps.schedule.outputs.arn}}
+        run_arn: ${{steps.schedule-run.outputs.arn}}
  
 
       
