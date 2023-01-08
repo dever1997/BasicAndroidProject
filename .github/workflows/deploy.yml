@@ -37,7 +37,7 @@ jobs:
        name: app-debug.apk
        #device_pool_arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
        #app_file: app-debug.apk
-       app_type: ANDROID_APP
+       type: ANDROID_APP
        
     - name: schedule a test run
       uses: realm/aws-devicefarm/schedule-run@master
