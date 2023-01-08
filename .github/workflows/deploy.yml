@@ -36,8 +36,8 @@ jobs:
     - name: upload to aws devicefarm
       id: upload
       run: |
-          token = $(aws devicefarm create-upload --project-arn ${{secrets.PROJECT_ARN}} --name app-debug.apk --type ANDROID_APP | jq '.upload.arn')
-          echo "::set-output name=arn::$token"
+          aws devicefarm create-upload --project-arn ${{secrets.PROJECT_ARN}} --name app-debug.apk --type ANDROID_APP | jq '.upload.arn' >>$GITHUB_OUTPUT
+        
       #uses: realm/aws-devicefarm/create-upload@master
       #id: upload-app
       #with:
@@ -51,8 +51,8 @@ jobs:
     - name: schedule a test run
       id: schedule
       run: |
-          token1 = $(aws devicefarm schedule-run --project-arn ${{secrets.PROJECT_ARN}} --app-arn ${{steps.upload.outputs.arn}} --device-pool-arn ${{secrets.AWS_DEVICE_POOL_ARN}} --test type=BUILTIN_EXPLORER | jq '.run.arn')
-           echo "::set-output name=arn::$token1"   
+          aws devicefarm schedule-run --project-arn ${{secrets.PROJECT_ARN}} --app-arn ${{steps.upload.outputs.arn}} --device-pool-arn ${{secrets.AWS_DEVICE_POOL_ARN}} --test type=BUILTIN_EXPLORER | jq '.run.arn' >> GITHUB_OUTPUT    
+             
       #uses: realm/aws-devicefarm/schedule-run@master
       #with:
         #name: schedule_run
