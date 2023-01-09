@@ -33,37 +33,32 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
       
-    - name: upload to aws devicefarm
-      id: upload
-      run: |
-          aws devicefarm create-upload --project-arn ${{secrets.PROJECT_ARN}} --name app-debug.apk --type ANDROID_APP | jq '.upload.arn' >>$GITHUB_OUTPUT
-        
-      #uses: realm/aws-devicefarm/create-upload@master
-      #id: upload-app
-      #with:
-       #project_arn: ${{secrets.PROJECT_ARN}}
-       #name: app-debug.apk
+    - name: upload to aws devicefarm  
+      uses: realm/aws-devicefarm/upload-file@master
+      id: upload-app
+      with:
+       project_arn: ${{secrets.PROJECT_ARN}}
+       file: app-debug.apk
        #device_pool_arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
        #app_file: app-debug.apk
-       #type: ANDROID_APP
+       type: ANDROID_APP
       
        
     - name: schedule a test run
-      id: schedule
-      run: |
-          aws devicefarm schedule-run --project-arn ${{secrets.PROJECT_ARN}} --app-arn ${{steps.upload.outputs.arn}} --device-pool-arn ${{secrets.AWS_DEVICE_POOL_ARN}} --test type=BUILTIN_EXPLORER | jq '.run.arn' >> GITHUB_OUTPUT    
-             
-      #uses: realm/aws-devicefarm/schedule-run@master
-      #with:
-        #name: schedule_run
-        #project_arn: ${{secrets.PROJECT_ARN}}
-        #device_pool_arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
-        #app_arn: ${{steps.upload-app.outputs.arn}}
-        #test_type: BUILTIN_EXPLORER
+      id: schedule                
+      uses: realm/aws-devicefarm/schedule-run@master
+      with:
+        name: first_run
+        project_arn: ${{secrets.PROJECT_ARN}}
+        device_pool_arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
+        app_arn: ${{steps.upload-app.outputs.arn}}
+        test_type: BUILTIN_EXPLORER
         
     - name: get status of run
-      run: |
-        aws devicefarm get-run --arn ${{steps.schedule.outputs.arn}}
+      uses: realm/aws-device-farm/get-run@master
+      with:
+        run_arn: ${{steps.schedule.outputs.arn}}
+      
  
 
       
