@@ -55,7 +55,7 @@ jobs:
         test_type: BUILTIN_EXPLORER
         
     - name: get status of run
-      uses: realm/aws-device-farm/get-run@master
+      uses: realm/aws-devicefarm/get-run@master
       with:
         run_arn: ${{steps.schedule.outputs.arn}}
       
