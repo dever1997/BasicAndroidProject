@@ -10,10 +10,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Install jq tool
-      run: |
-       sudo apt-get update
-       sudo apt-get install jq
+
     - name: set up JDK 11
       uses: actions/setup-java@v3
       with:
@@ -21,10 +18,17 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build --build-cache
+#     - name: Grant execute permission for gradlew
+#       run: chmod +x gradlew
+#     - name: Build with Gradle
+#       run: ./gradlew build --build-cache
+
+    - name: Build the apk file
+      uses: sparkfabrik/android-build-action@v1.0.0
+      with:
+        project-path: https://github.com/dever1997/BasicAndroidProject
+        output-path: app.apk
+
       
     - name: configure aws credentials
       uses: aws-actions/configure-aws-credentials@master
@@ -33,31 +37,31 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
       
-    - name: upload to aws devicefarm  
-      uses: realm/aws-devicefarm/upload-file@master
-      id: upload-app
-      with:
-       project_arn: ${{secrets.PROJECT_ARN}}
-       file: app-debug.apk
-       #device_pool_arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
-       #app_file: app-debug.apk
-       type: ANDROID_APP
+#     - name: upload to aws devicefarm  
+#       uses: realm/aws-devicefarm/upload-file@master
+#       id: upload-app
+#       with:
+#        project_arn: ${{secrets.PROJECT_ARN}}
+#        file: app-debug.apk
+#        #device_pool_arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
+#        #app_file: app-debug.apk
+#        type: ANDROID_APP
       
        
-    - name: schedule a test run
-      id: schedule                
-      uses: realm/aws-devicefarm/schedule-run@master
-      with:
-        name: first_run
-        project_arn: ${{secrets.PROJECT_ARN}}
-        device_pool_arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
-        app_arn: ${{steps.upload-app.outputs.arn}}
-        test_type: BUILTIN_EXPLORER
+#     - name: schedule a test run
+#       id: schedule                
+#       uses: realm/aws-devicefarm/schedule-run@master
+#       with:
+#         name: first_run
+#         project_arn: ${{secrets.PROJECT_ARN}}
+#         device_pool_arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
+#         app_arn: ${{steps.upload-app.outputs.arn}}
+#         test_type: BUILTIN_EXPLORER
         
-    - name: get status of run
-      uses: realm/aws-devicefarm/get-run@master
-      with:
-        run_arn: ${{steps.schedule.outputs.arn}}
+#     - name: get status of run
+#       uses: realm/aws-devicefarm/get-run@master
+#       with:
+#         run_arn: ${{steps.schedule.outputs.arn}}
       
  
 
