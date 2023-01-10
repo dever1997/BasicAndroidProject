@@ -48,13 +48,13 @@ jobs:
        with:
          name: debug
       
-     - name: Schedule test run
+     - name: test
        uses: realm/aws-devicefarm/test-application@master
        with:
         name: test_applications
         project_arn: ${{ secrets.PROJECT_ARN }}
         device_pool_arn: ${{ secrets.AWS_DEVICE_POOL_ARN }}
-        app_file: debug 
+        #app_file: debug 
         app_type: ANDROID_APP
         test_type: BUILTIN_EXPLORER
 
