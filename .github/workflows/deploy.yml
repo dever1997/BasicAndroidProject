@@ -26,7 +26,7 @@ jobs:
     - name: upload artifacts
       uses: actions/upload-artifact@v3
       with:
-         name: debug
+         name: app-debug.apk
          path: app/build/outputs/apk/debug/app-debug.apk
          
 
@@ -43,20 +43,36 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
         
-     - name: download artifacts
-       uses: actions/download-artifact@v3
-       with:
-         name: debug
+     - name: create-upload
+       id: create-upload
+       run: aws devicefarm create-upload --project-arn ${{secrets.PROJECT_ARN}} --name app-debug.apk --type ANDROID_APP
+       
+     - name: upload
+       id: upload
+       run: curl -T app-debug.apk ${{steps.create-upload.outputs.url}}
+       
+     - name: schedule-run
+       id: schedule-run
+       run: aws devicefarm schedule-run --project-arn ${{secrets.PROJECT_ARN}} --app-arn ${{steps.create-upload.outputs.arn}}  --device-pool-arn ${{secrets.AWS_DEVICE_POOL_ARN}} --name myRun --test type = BUILTIN_EXPLORER
+       
+     - name: get-run
+       id: get-run
+       run: aws devicefarm get-run --arn ${{steps.schedule-run.outputs.arn}}
+        
+#      - name: download artifacts
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: debug
       
-     - name: test
-       uses: realm/aws-devicefarm/test-application@master
-       with:
-        name: test_applications
-        project_arn: ${{ secrets.PROJECT_ARN }}
-        device_pool_arn: ${{ secrets.AWS_DEVICE_POOL_ARN }}
-        #app_file: debug 
-        app_type: ANDROID_APP
-        test_type: BUILTIN_EXPLORER
+#      - name: test
+#        uses: realm/aws-devicefarm/test-application@master
+#        with:
+#         name: test_applications
+#         project_arn: ${{ secrets.PROJECT_ARN }}
+#         device_pool_arn: ${{ secrets.AWS_DEVICE_POOL_ARN }}
+#         #app_file: debug 
+#         app_type: ANDROID_APP
+#         test_type: BUILTIN_EXPLORER
 
        
 #     - name: schedule a test run
