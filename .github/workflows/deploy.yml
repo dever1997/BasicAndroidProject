@@ -49,15 +49,15 @@ jobs:
        
      - name: upload
        id: upload
-       run: curl -T app-debug.apk ${{steps.create-upload.outputs.url}}
+       run: curl -T app-debug.apk ${{steps.create-upload.outputs.upload.url}}
        
      - name: schedule-run
        id: schedule-run
-       run: aws devicefarm schedule-run --project-arn ${{secrets.PROJECT_ARN}} --app-arn ${{steps.create-upload.outputs.arn}}  --device-pool-arn ${{secrets.AWS_DEVICE_POOL_ARN}} --name myRun --test type = BUILTIN_EXPLORER
+       run: aws devicefarm schedule-run --project-arn ${{secrets.PROJECT_ARN}} --app-arn ${{steps.create-upload.outputs.upload.arn}}  --device-pool-arn ${{secrets.AWS_DEVICE_POOL_ARN}} --name myRun --test type = BUILTIN_EXPLORER
        
      - name: get-run
        id: get-run
-       run: aws devicefarm get-run --arn ${{steps.schedule-run.outputs.arn}}
+       run: aws devicefarm get-run --arn ${{steps.schedule-run.outputs.run.arn}}
         
 #      - name: download artifacts
 #        uses: actions/download-artifact@v3
