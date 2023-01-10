@@ -21,14 +21,14 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew assembleDebug
-
-    - name: Build the apk file
-      uses: sparkfabrik/android-build-action@v1.0.0
+      run: ./gradlew build
+          
+    - name: download artifacts
+      uses: actions/download-artifact@v3
       with:
-        project-path: https://github.com/dever1997/BasicAndroidProject
-        output-path: app.apk
-
+         name: debug.apk
+         path: app/build/outputs/apk/debug/*.apk
+         
       
     - name: configure aws credentials
       uses: aws-actions/configure-aws-credentials@master
@@ -37,15 +37,15 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
       
-#     - name: upload to aws devicefarm  
-#       uses: realm/aws-devicefarm/upload-file@master
-#       id: upload-app
-#       with:
-#        project_arn: ${{secrets.PROJECT_ARN}}
-#        file: app-debug.apk
-#        #device_pool_arn: ${{secrets.AWS_DEVICE_POOL_ARN}}
-#        #app_file: app-debug.apk
-#        type: ANDROID_APP
+    - name: Schedule test run
+      uses: realm/aws-devicefarm/test-application@v1
+      with:
+        name: run_with_uploads
+        project_arn: ${{ secrets.PROJECT_ARN }}
+        device_pool_arn: ${{ secrets.AWS_DEVICE_POOL_ARN }}
+        app_file: debug.apk 
+        app_type: ANDROID_APP
+        test_type: BUITIN_EXPLORER
       
        
 #     - name: schedule a test run
