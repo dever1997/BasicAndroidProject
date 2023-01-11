@@ -29,6 +29,15 @@ jobs:
          name: app-debug.apk
          path: app/build/outputs/apk/debug/app-debug.apk
          
+    - name: build a zip file
+      uses: montudor/action-zip@v1
+      with:
+        args: zip -qq -r tests.zip -d tests
+        
+    - uses: actions/upload-artifact@v2
+      with:
+        name: tests.zip
+         
 
   deploy:
      needs: build
@@ -43,13 +52,10 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
         
-#      - name: download artifacts
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: debug
-
-     - name: creating a zip file
-       run: zip -j tests.zip ./tests/*
+     - name: download artifacts
+       uses: actions/download-artifact@v3
+       with:
+         name: tests.zip
       
      - name: test
        uses: realm/aws-devicefarm/test-application@master
