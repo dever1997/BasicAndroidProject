@@ -66,7 +66,7 @@ jobs:
         #app_file: debug 
         app_type: ANDROID_APP
         test_type: BUILTIN_EXPLORER
-        test_package_file: ./tests.zip
+#         test_package_file: ./tests.zip
         test_package_type: APPIUM_PYTHON_TEST_PACKAGE
 
        
