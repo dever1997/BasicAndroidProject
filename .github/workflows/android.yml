@@ -54,6 +54,13 @@ jobs:
                   with:
                     name: app-debug.apk
 
+                - name: configure aws credentials
+                  uses: aws-actions/configure-aws-credentials@master
+                  with:
+                    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+                    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                    aws-region: us-west-2
+
                 - name: upload file
                   run: |
                     response_upload_app=$(aws devicefarm create-upload --project-arn ${{secrets.PROJECT_ARN}} --name app-debug.apk --type ANDROID_APP)
