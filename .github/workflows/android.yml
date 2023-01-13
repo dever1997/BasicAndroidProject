@@ -78,12 +78,8 @@ jobs:
                     arn_upload_app=`cat arn.txt`
                     app_upload=$(aws devicefarm get-upload --arn $arn_upload_app)
                     echo $app_upload
-
-
-                - name: schedule run
-                  run: |
-                    app_arn=`cat arn.txt`
-                    response_run_tests=$(aws devicefarm schedule-run --project-arn ${{secrets.PROJECT_ARN}} --app-arn $app_arn --device-pool-arn ${{secrets.AWS_DEVICE_POOL_ARN}} --name 'first_cli_run' --test type='BUILTIN_EXPLORER')
+                    sleep 10
+                    response_run_tests=$(aws devicefarm schedule-run --project-arn ${{secrets.PROJECT_ARN}} --app-arn $arn_upload_app --device-pool-arn ${{secrets.AWS_DEVICE_POOL_ARN}} --name 'first_cli_run' --test type='BUILTIN_EXPLORER')
                     echo $response_run_tests
                     arn_test_run=$(echo $response_run_tests | jq '.run.arn' | sed -e 's/^"//' -e 's/"$//')
                     echo $arn_test_run > runtime_arn.txt
