@@ -69,16 +69,20 @@ jobs:
                     echo $url_upload_app
                     url_upload_arn=$(echo $response_upload_app | jq '.upload.arn' | sed -e 's/^"//' -e 's/"$//')
                     echo $url_upload_arn
-                    curl -T app-debug.apk $url_upload_app
-                    echo $url_upload_arn 
+                    curl -T app-debug.apk $url_upload_app 
                     sleep 180
                     echo "uploaded"
+                    
+                - name: get-upload
+                  run: |
+                    app_upload = $(aws devicefarm get-upload --arn $url_upload_arn)
+                    echo $app_upload
 
 
                 - name: schedule run
                   run: |
                     
-                    response_run_tests=$(aws devicefarm schedule-run --project-arn ${{secrets.PROJECT_ARN}} --app-arn $url_upload_arn --device-pool-arn ${{secrets.AWS_DEVICE_POOL_ARN}} --name 'first_cli_run' --test type=BUILTIN_EXPLORER)
+                    response_run_tests=$(aws devicefarm schedule-run --project-arn ${{secrets.PROJECT_ARN}} --app-arn $url_upload_arn --device-pool-arn ${{secrets.AWS_DEVICE_POOL_ARN}} --name 'first_cli_run' --test type='BUILTIN_EXPLORER')
                     echo $response_run_tests
                     arn_test_run=$(echo $response_run_tests | jq '.run.arn' | sed -e 's/^"//' -e 's/"$//')
                     echo $arn_test_run > runtime_arn.txt
@@ -97,10 +101,4 @@ jobs:
                     
                     aws_resp=$(aws devicefarm get-run --arn $arn_test_run | jq '.run.counters')
                     echo $aws_resp > aws_response_result.json
-
-
-
-
-
-
 
