@@ -25,8 +25,17 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew assembleDebug --stacktrace
+      
+    - name: zipping the test files
+      uses: montudor/action-zip/@v1
+      with:
+        args: zip -qq -r tests.zip tests
+    - name: upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: tests.zip
     - name: upload app-debug.apk
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: app-debug.apk
         path: app/build/outputs/apk/debug/app-debug.apk 
@@ -50,9 +59,14 @@ jobs:
                 #   run: ./gradlew devicefarmUpload
 
                 - name: download apk file
-                  uses: actions/download-artifact@v1
+                  uses: actions/download-artifact@v2
                   with:
                     name: app-debug.apk
+                    
+                - name: download zip files
+                  uses: actions/download-artifact@v2
+                  with:
+                    name: tests.zip
 
                 - name: configure aws credentials
                   uses: aws-actions/configure-aws-credentials@master
@@ -64,22 +78,35 @@ jobs:
                 - name: upload file
                   run: |
                     response_upload_app=$(aws devicefarm create-upload --project-arn ${{secrets.PROJECT_ARN}} --name app-debug.apk --type ANDROID_APP)
-                    echo $response_upload_app
+                    
                     url_upload_app=$(echo $response_upload_app | jq '.upload.url' | sed -e 's/^"//' -e 's/"$//')
                     echo $url_upload_app
                     url_upload_arn=$(echo $response_upload_app | jq '.upload.arn' | sed -e 's/^"//' -e 's/"$//')
                     echo $url_upload_arn > ./arn.txt
                     curl -T app-debug.apk $url_upload_app 
                     sleep 180
-                    echo "uploaded"
-                    
+                    echo "app uploaded"
+               
+                - name: upload tests files
+                  run: |
+                   response_upload_test=$(aws devicefarm create-upload --project-arn ${{secrets.PROJECT_ARN}} --name tests.zip --type APPIUM_PYTHON_TEST_PACKAGE)
+                   echo $response_upload_test
+                   url_upload_test=$(echo $response_upload_test | jq '.upload.url' | sed -e 's/^"//' -e 's/"$//')
+                   arn_upload_test=$(echo $response_upload_test | jq '.upload.arn' | sed -e 's/^"//' -e 's/"$//')
+                   echo $arn_upload_test > testArn.txt
+                   curl -T tests.zip $url_upload_test
+                   sleep 180
+                   echo "test uploaded"
+                   
+                   
                 - name: get-upload
                   run: |
                     arn_upload_app=`cat arn.txt`
+                    arn_upload_test=`cat testArn.txt`
                     app_upload=$(aws devicefarm get-upload --arn $arn_upload_app)
                     echo $app_upload
                     sleep 10
-                    response_run_tests=$(aws devicefarm schedule-run --project-arn ${{secrets.PROJECT_ARN}} --app-arn $arn_upload_app --device-pool-arn ${{secrets.AWS_DEVICE_POOL_ARN}} --name 'first_cli_run' --test type='BUILTIN_EXPLORER')
+                    response_run_tests=$(aws devicefarm schedule-run --project-arn ${{secrets.PROJECT_ARN}} --app-arn $arn_upload_app --device-pool-arn ${{secrets.AWS_DEVICE_POOL_ARN}} --name 'first_cli_run' --test type=APPIUM_PYTHON, testPackageArn=$arn_upload_test)
                     echo $response_run_tests
                     arn_test_run=$(echo $response_run_tests | jq '.run.arn' | sed -e 's/^"//' -e 's/"$//')
                     echo $arn_test_run > runtime_arn.txt
