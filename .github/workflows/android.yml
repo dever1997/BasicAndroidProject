@@ -34,6 +34,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: tests.zip
+        path: ./tests.zip
     - name: upload app-debug.apk
       uses: actions/upload-artifact@v2
       with:
