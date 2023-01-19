@@ -15,7 +15,7 @@ jobs:
      - name: upload artifact
        uses: actions/upload-artifact@v2
        with:
-         name: test_arn
+         name: name.txt
          path: ./name.txt
          
   jobs2:
@@ -26,9 +26,9 @@ jobs:
       - name: download artifact
         uses: actions/download-artifact@v2
         with:
-         name: test_arn
+         name: name.txt
          
       - run: |
-          info=$(cat test_arn)
+          info=$(cat name.txt)
           echo $info
          
