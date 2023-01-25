@@ -23,6 +23,6 @@ jobs:
   job3:
     needs: job1
     runs-on: ubuntu-latest
-    if: ${{needs.job1.outputs.output1 == 'hellos'}}
+    if: ${{needs.job1.outputs.output1 == 'hello'}}
     steps:
-     - run: echo 'hello' 
+     - run: exit 
