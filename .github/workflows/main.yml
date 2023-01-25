@@ -23,6 +23,9 @@ jobs:
   job3:
     needs: job1
     runs-on: ubuntu-latest
-    if: ${{needs.job1.outputs.output1 == 'hello'}}
+    if: ${{needs.job1.outputs.output1 == 'hello'}}    
     steps:
-     - run: exit 
+     -  uses: actions/github-script@v3
+        with:
+          script: |
+            core.setFailed('Coverage test below tolerance')
