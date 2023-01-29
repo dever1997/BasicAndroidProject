@@ -13,7 +13,7 @@ jobs:
     steps:
       - id: step1
         run: |
-          Name = "Deverly"
+          Name="Deverly"
           echo "test=$Name" >> $GITHUB_OUTPUT
  
 #   job2:
